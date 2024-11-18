@@ -28,18 +28,18 @@ static int cdev_open(struct inode *inode, struct file *file) {
     struct cdev_data *dev_data;
     dev_data = container_of(inode->i_cdev, struct cdev_data, cdev);
     file->private_data = dev_data;
-    printk(KERN_DEBUG "Entering: %s\n", _func_);
+    printk(KERN_DEBUG "Entering: %s\n", __func__);
     return 0;
 }
 
 static int cdev_release(struct inode *inode, struct file *file) {
-    printk(KERN_DEBUG "Entering: %s\n", _func_);
+    printk(KERN_DEBUG "Entering: %s\n", __func__);
     return 0;
 }
 
 static long cdev_ioctl(struct file *file, unsigned int cmd, unsigned long arg) {
     struct cdev_data *dev_data = file->private_data;
-    printk(KERN_DEBUG "Entering: %s\n", _func_);
+    printk(KERN_DEBUG "Entering: %s\n", __func__);
     switch (cmd) {
         case IOCTL_RESET_BUFFER:
             mutex_lock(&dev_data->lock); // Lock mutex before critical section
@@ -58,7 +58,7 @@ static ssize_t cdev_read(struct file *file, char __user *buf, size_t count, loff
     size_t udatalen;
     ssize_t ret = 0;
 
-    printk(KERN_DEBUG "Entering: %s\n", _func_);
+    printk(KERN_DEBUG "Entering: %s\n", __func__);
     mutex_lock(&dev_data->lock); // Lock mutex before accessing buffer
 
     udatalen = strlen(dev_data->user_data);
@@ -82,7 +82,7 @@ static ssize_t cdev_write(struct file *file, const char __user *buf, size_t coun
     size_t available_space, current_len, nbr_chars;
     ssize_t ret = 0;
 
-    printk(KERN_DEBUG "Entering: %s\n", _func_);
+    printk(KERN_DEBUG "Entering: %s\n", __func__);
 
     mutex_lock(&dev_data->lock); // Lock mutex before accessing buffer
 
@@ -128,7 +128,7 @@ int init_module(void) {
     dev_t dev;
     int i;
 
-    printk(KERN_DEBUG "Entering: %s\n", _func_);
+    printk(KERN_DEBUG "Entering: %s\n", __func__);
 
     err = alloc_chrdev_region(&dev, 0, DEVICE_COUNT, "mycdev");
     if (err < 0) {
@@ -187,7 +187,7 @@ cleanup:
 
 void cleanup_module(void) {
     int i;
-    printk(KERN_DEBUG "Entering: %s\n", _func_);
+    printk(KERN_DEBUG "Entering: %s\n", __func__);
     for (i = 0; i < DEVICE_COUNT; i++) {
         device_destroy(mycdev_class, MKDEV(cdev_major, i));
         cdev_del(&mycdev_data[i].cdev);
